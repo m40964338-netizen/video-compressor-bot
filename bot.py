@@ -1,5 +1,7 @@
 import os
 import subprocess
+import imageio_ffmpeg
+FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
 from telegram import Update
 from telegram.ext import Application, MessageHandler, CommandHandler, ContextTypes, filters
 
@@ -26,7 +28,7 @@ async def compress_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await file.download_to_drive(input_file)
 
     subprocess.run([
-        "ffmpeg",
+    FFMPEG_PATH
         "-i", input_file,
         "-vcodec", "libx264",
         "-crf", "28",
