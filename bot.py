@@ -1,16 +1,19 @@
 import os
 import subprocess
 import imageio_ffmpeg
-FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
+
 from telegram import Update
 from telegram.ext import Application, MessageHandler, CommandHandler, ContextTypes, filters
 
 TOKEN = os.environ["BOT_TOKEN"]
+FFMPEG_PATH = imageio_ffmpeg.get_ffmpeg_exe()
+
 
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await update.message.reply_text(
         "🎬 سلام! ویدیو رو بفرست تا حجمش رو کاهش بدم."
     )
+
 
 async def compress_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     message = update.message
@@ -28,7 +31,7 @@ async def compress_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     await file.download_to_drive(input_file)
 
     subprocess.run([
-    FFMPEG_PATH
+        FFMPEG_PATH,
         "-i", input_file,
         "-vcodec", "libx264",
         "-crf", "28",
@@ -45,6 +48,7 @@ async def compress_video(update: Update, context: ContextTypes.DEFAULT_TYPE):
     os.remove(input_file)
     os.remove(output_file)
 
+
 def main():
     app = Application.builder().token(TOKEN).build()
 
@@ -52,6 +56,7 @@ def main():
     app.add_handler(MessageHandler(filters.VIDEO, compress_video))
 
     app.run_polling()
+
 
 if __name__ == "__main__":
     main()
